@@ -1,0 +1,97 @@
+# Diagrama de Classes de Domínio - HortaHub
+
+```plantuml
+@startuml
+
+' === ENTIDADES PRINCIPAIS ===
+class Assinante {
+  +id: int
+  +nome: string
+  +celular: string
+}
+
+class CodigoVerificacao {
+  +codigo: string
+  +expiracao: DateTime
+  +validado: boolean
+}
+
+class Plano {
+  +id: int
+  +nome: string
+  +precoSemanal: double
+}
+
+class Categoria {
+  +id: int
+  +nome: string
+}
+
+class Item {
+  +id: int
+  +nome: string
+  +tipo: string
+}
+
+class RegraPlano {
+  +quantidadeMax: int
+}
+
+class Cesta {
+  +id: int
+  +semana: Date
+  +status: string
+}
+
+class ItemCesta {
+  +quantidade: int
+}
+
+class Endereco {
+  +id: int
+  +cep: string
+  +logradouro: string
+  +numero: string
+  +complemento: string
+}
+
+class Assinatura {
+  +id: int
+  +status: string
+  +protocolo: string
+}
+
+class Pagamento {
+  +id: int
+  +status: string
+  +valor: double
+}
+
+class CartaoCredito {
+  +numero: string
+  +nomeTitular: string
+  +validade: string
+  +cvv: string
+}
+
+' === RELACIONAMENTOS ===
+
+Assinante "1" -- "1" CodigoVerificacao : recebe >
+Assinante "1" -- "0..*" Assinatura : possui >
+
+Assinatura "1" -- "1" Plano : baseado em >
+Assinatura "1" -- "1" Cesta : gera >
+
+Plano "1" -- "1..*" RegraPlano : define >
+Categoria "1" -- "1..*" Item : agrupa >
+RegraPlano "1" -- "1" Categoria : limita >
+
+Cesta "1" -- "1..*" ItemCesta : contem >
+Item "1" -- "0..*" ItemCesta : compoe >
+
+Assinatura "1" -- "1" Endereco : entrega em >
+Assinatura "1" -- "1" Pagamento : possui >
+
+Pagamento "1" -- "1" CartaoCredito : utiliza >
+
+@enduml
