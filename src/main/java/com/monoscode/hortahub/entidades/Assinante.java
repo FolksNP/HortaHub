@@ -1,5 +1,4 @@
-package com.monoscode.hortahub;
-// Assinante, pois usuário sua drogas 🙃
+package com.monoscode.hortahub.entidades;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,17 +12,26 @@ public class Assinante {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private long id;
 
-    String nome;
-    String telefone;
-    String cpf;
+    private String nome;
+    private String sobrenome;
+    private String cpf;
+    private String telefone;
 
-    public Assinante(){
+    public Assinante(/*long id, */ String nome, String sobrenome, String cpf, String telefone) {
+        //this.id = id;
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.cpf = cpf;
+        this.telefone = telefone;
+    }
+
+    public Assinante() {
 
     }
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
@@ -35,12 +43,12 @@ public class Assinante {
         this.nome = nome;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public String getSobrenome() {
+        return sobrenome;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
     }
 
     public String getCpf() {
@@ -51,11 +59,19 @@ public class Assinante {
         this.cpf = cpf;
     }
 
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Assinante assinante = (Assinante) o;
-        return Objects.equals(id, assinante.id);
+        return id == assinante.id;
     }
 
     @Override
