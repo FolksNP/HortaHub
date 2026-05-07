@@ -1,9 +1,7 @@
 package com.monoscode.hortahub.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.monoscode.hortahub.repositories.PlanoAssinaturaRepository;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -18,6 +16,12 @@ public class Assinante {
     private String sobrenome;
     private String cpf;
     private String telefone;
+    private Endereco endereco;
+//    private Cesta cestaSemanal; Esse registro deve ser mantido nessa entidade?
+
+    @ManyToOne
+    @JoinColumn(name = "plano_assinatura_id")
+    private PlanoAssinatura planoAssinatura; // Onde entra a classe associativa "Contrato" aqui?
 
     public Assinante(/*long id, */ String nome, String sobrenome, String cpf, String telefone) {
         //this.id = id;
@@ -29,6 +33,10 @@ public class Assinante {
 
     public Assinante() {
 
+    }
+
+    public void selecionarPlanoAssinatura(PlanoAssinatura plano) {
+        this.planoAssinatura = plano;
     }
 
     public long getId() {
@@ -65,6 +73,10 @@ public class Assinante {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public PlanoAssinatura getPlanoAssinatura() {
+        return planoAssinatura;
     }
 
     @Override
