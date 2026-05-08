@@ -1,7 +1,6 @@
 package com.monoscode.hortahub.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.util.Objects;
@@ -16,11 +15,16 @@ public class Pedido {
     private Double valorTotal;
     private Date dataRegistro;
 
-    public Pedido(String protocolo, String status, Double valorTotal, Date dataRegistro) {
+    @OneToOne
+    @JoinColumn(name = "cesta_id")
+    private Cesta cesta;
+
+    public Pedido(String protocolo, String status, Double valorTotal, Date dataRegistro, Cesta cesta) {
         this.protocolo = protocolo;
         this.status = status;
         this.valorTotal = valorTotal;
         this.dataRegistro = dataRegistro;
+        this.cesta = cesta;
     }
 
     public Pedido() {

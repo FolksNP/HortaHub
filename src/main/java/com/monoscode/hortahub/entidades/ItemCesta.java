@@ -5,6 +5,8 @@ import jakarta.persistence.Id;
 
 import java.util.Objects;
 
+// Isso não vira entidade. Acredito que quem vira Produto
+// Essa classe existe pra permitir que múltiplos produtos iguais sejam selecionados
 @Entity(name = "tbl_item_cesta")
 public class ItemCesta {
 

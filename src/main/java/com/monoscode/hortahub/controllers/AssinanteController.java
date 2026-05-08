@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("assinante")
 public class AssinanteController {
 
-    private final AssinanteService service;
+    private AssinanteService service;
 
     public AssinanteController(AssinanteService service) {
         this.service = service;
+    }
+
+    public AssinanteController() {
     }
 
     @PostMapping("/verificar-numero")
@@ -28,7 +31,7 @@ public class AssinanteController {
     }
 
     @PostMapping("/cadastrar-assinante")
-    public HttpStatus cadastrarAssianante(@RequestBody Assinante assinante){
+    public HttpStatus cadastrarAssinante(@RequestBody Assinante assinante){
         if(service.cadastrarNovoCliente(assinante)){
             return HttpStatus.CREATED;
         }else {
