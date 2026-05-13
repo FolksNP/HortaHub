@@ -11,6 +11,9 @@ import java.util.Objects;
 
 @Entity(name = "tbl_produto")
 public class Produto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

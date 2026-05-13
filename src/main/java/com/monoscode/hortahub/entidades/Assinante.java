@@ -24,6 +24,12 @@ public class Assinante {
 
     @Column(nullable = false)
     private String telefone;
+    private Endereco endereco;
+//    private Cesta cestaSemanal; Esse registro deve ser mantido nessa entidade?
+
+    @ManyToOne
+    @JoinColumn(name = "plano_assinatura_id")
+    private PlanoAssinatura planoAssinatura; // Onde entra a classe associativa "Contrato" aqui?
 
     @OneToMany(mappedBy = "assinante", cascade = CascadeType.ALL)
     private List<Pedido> pedidos = new ArrayList<>();
@@ -69,6 +75,10 @@ public class Assinante {
         this.pagamentos = pagamentos;
     }
 
+    public void selecionarPlanoAssinatura(PlanoAssinatura plano) {
+        this.planoAssinatura = plano;
+    }
+
     public long getId() {
         return id;
     }
@@ -103,6 +113,10 @@ public class Assinante {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public PlanoAssinatura getPlanoAssinatura() {
+        return planoAssinatura;
     }
 
     @Override
