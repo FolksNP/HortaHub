@@ -1,7 +1,6 @@
 package com.monoscode.hortahub.entidades;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.CollectionId;
 
 import java.util.ArrayList;
 import java.util.List;
