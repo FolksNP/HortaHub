@@ -1,38 +1,66 @@
 package com.monoscode.hortahub.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity(name = "tbl_pedidos")
+@Entity
+@Table(name = "tbl_pedido")
 public class Pedido {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private LocalDateTime dataPedido;
+
+    @Column(nullable = false)
+    private String status;
+
+    @Column(nullable = false, unique = true)
     private String protocolo;
 
-    private String status;
-    private Double valorTotal;
-    private Date dataRegistro;
+    @ManyToOne
+    @JoinColumn(name = "assinante_id", nullable = false)
+    private Assinante assinante;
 
-    public Pedido(String protocolo, String status, Double valorTotal, Date dataRegistro) {
-        this.protocolo = protocolo;
-        this.status = status;
-        this.valorTotal = valorTotal;
-        this.dataRegistro = dataRegistro;
-    }
+    @ManyToOne
+    @JoinColumn(name = "plano_assinatura_id", nullable = false)
+    private PlanoAssinatura planoAssinatura;
+
+    @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private Cesta cesta;
+
+    @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private Pagamento pagamento;
 
     public Pedido() {
-
     }
 
-    public String getProtocolo() {
-        return protocolo;
-    }
-
-    public void setProtocolo(String protocolo) {
+    public Pedido(LocalDateTime dataPedido,
+                  String status,
+                  String protocolo,
+                  Assinante assinante,
+                  PlanoAssinatura planoAssinatura) {
+        this.dataPedido = dataPedido;
+        this.status = status;
         this.protocolo = protocolo;
+        this.assinante = assinante;
+        this.planoAssinatura = planoAssinatura;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getDataPedido() {
+        return dataPedido;
+    }
+
+    public void setDataPedido(LocalDateTime dataPedido) {
+        this.dataPedido = dataPedido;
     }
 
     public String getStatus() {
@@ -43,31 +71,55 @@ public class Pedido {
         this.status = status;
     }
 
-    public Double getValorTotal() {
-        return valorTotal;
+    public String getProtocolo() {
+        return protocolo;
     }
 
-    public void setValorTotal(Double valorTotal) {
-        this.valorTotal = valorTotal;
+    public void setProtocolo(String protocolo) {
+        this.protocolo = protocolo;
     }
 
-    public Date getDataRegistro() {
-        return dataRegistro;
+    public Assinante getAssinante() {
+        return assinante;
     }
 
-    public void setDataRegistro(Date dataRegistro) {
-        this.dataRegistro = dataRegistro;
+    public void setAssinante(Assinante assinante) {
+        this.assinante = assinante;
+    }
+
+    public PlanoAssinatura getPlanoAssinatura() {
+        return planoAssinatura;
+    }
+
+    public void setPlanoAssinatura(PlanoAssinatura planoAssinatura) {
+        this.planoAssinatura = planoAssinatura;
+    }
+
+    public Cesta getCesta() {
+        return cesta;
+    }
+
+    public void setCesta(Cesta cesta) {
+        this.cesta = cesta;
+    }
+
+    public Pagamento getPagamento() {
+        return pagamento;
+    }
+
+    public void setPagamento(Pagamento pagamento) {
+        this.pagamento = pagamento;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Pedido pedido = (Pedido) o;
-        return Objects.equals(protocolo, pedido.protocolo);
+        if (this == o) return true;
+        if (!(o instanceof Pedido pedido)) return false;
+        return Objects.equals(id, pedido.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(protocolo);
+        return Objects.hash(id);
     }
 }

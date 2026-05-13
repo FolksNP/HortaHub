@@ -1,51 +1,106 @@
 package com.monoscode.hortahub.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Entity(name = "tbl_pagamento")
+@Entity
+@Table(name = "tbl_pagamento")
 public class Pagamento {
 
     @Id
-    private int idPagamento;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private Date pagamentoRealizado;
-    private Double pagamento;
-    private Boolean aprovado;
+    @Column(nullable = false, precision = 3, scale = 2)
+    private Double valor;
 
-    public Pagamento(Date pagamentoRealizado, Double pagamento, Boolean aprovado) {
-        this.pagamentoRealizado = pagamentoRealizado;
-        this.pagamento = pagamento;
-        this.aprovado = aprovado;
-    }
+    @Column(nullable = false)
+    private LocalDateTime dataPagamento;
+
+    @Column(nullable = false)
+    private String status;
+
+
+    @ManyToOne
+    @JoinColumn(name = "assinante_id", nullable = false)
+    private Assinante assinante;
+
+    @OneToOne
+    @JoinColumn(name = "pedido_id", nullable = false)
+    private Pedido pedido;
 
     public Pagamento() {
-
     }
 
-    public Date getPagamentoRealizado() {
-        return pagamentoRealizado;
+    public Pagamento(Double valor,
+                     LocalDateTime dataPagamento,
+                     String status,
+                     Assinante assinante,
+                     Pedido pedido) {
+        this.valor = valor;
+        this.dataPagamento = dataPagamento;
+        this.status = status;
+        this.assinante = assinante;
+        this.pedido = pedido;
     }
 
-    public void setPagamentoRealizado(Date pagamentoRealizado) {
-        this.pagamentoRealizado = pagamentoRealizado;
+
+    public Long getId() {
+        return id;
     }
 
-    public Double getPagamento() {
-        return pagamento;
+    public Double getValor() {
+        return valor;
     }
 
-    public void setPagamento(Double pagamento) {
-        this.pagamento = pagamento;
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 
-    public Boolean getAprovado() {
-        return aprovado;
+    public LocalDateTime getDataPagamento() {
+        return dataPagamento;
     }
 
-    public void setAprovado(Boolean aprovado) {
-        this.aprovado = aprovado;
+    public void setDataPagamento(LocalDateTime dataPagamento) {
+        this.dataPagamento = dataPagamento;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Assinante getAssinante() {
+        return assinante;
+    }
+
+    public void setAssinante(Assinante assinante) {
+        this.assinante = assinante;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pagamento that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

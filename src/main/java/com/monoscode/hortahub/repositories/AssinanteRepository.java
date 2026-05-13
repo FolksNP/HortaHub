@@ -7,6 +7,9 @@ import java.util.Optional;
 
 public interface AssinanteRepository extends JpaRepository<Assinante, Long> {
 
-    Optional<Assinante> findByNumero(String numero);
+    Optional<Assinante> findByTelefone(String telefone);
+
+    Optional<Assinante> findByCpf(String cpf);
+
 
 }

@@ -1,41 +1,61 @@
 package com.monoscode.hortahub.controllers;
 
 import com.monoscode.hortahub.entidades.Assinante;
-import com.monoscode.hortahub.repositories.AssinanteRepository;
 import com.monoscode.hortahub.services.AssinanteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("assinante")
+@RequestMapping("/assinantes")
 public class AssinanteController {
 
-    private final AssinanteService service;
+    @Autowired
+    private AssinanteService servico;
 
-    public AssinanteController(AssinanteService service) {
-        this.service = service;
+    @GetMapping
+    public List<Assinante> listar() {
+        return servico.listarTodos();
     }
 
-    @PostMapping("/verificar-numero")
-    public HttpStatus validarCadastroTelefone(@PathVariable String numero){
+    @GetMapping("/{id}")
+    public ResponseEntity<Assinante> buscar(@PathVariable Long id) {
+        return servico.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-        if(service.verificarCadastro(numero)){
-            return HttpStatus.NOT_ACCEPTABLE;
-        }else{
-            return HttpStatus.ACCEPTED;
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<Assinante> buscarPorCpf(@PathVariable String cpf) {
+        return servico.buscarPorCpf(cpf)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Assinante adicionar(@RequestBody Assinante assinante) {
+        return servico.salvar(assinante);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Assinante> atualizar(@PathVariable Long id, @RequestBody Assinante assinante) {
+        try {
+            return ResponseEntity.ok(servico.atualizar(id, assinante));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
-
     }
 
-    @PostMapping("/cadastrar-assinante")
-    public HttpStatus cadastrarAssianante(@RequestBody Assinante assinante){
-        if(service.cadastrarNovoCliente(assinante)){
-            return HttpStatus.CREATED;
-        }else {
-            return HttpStatus.UNPROCESSABLE_CONTENT;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        if (servico.buscarPorId(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
+        servico.excluir(id);
+        return ResponseEntity.noContent().build();
     }
-
-
-
 }

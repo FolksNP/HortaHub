@@ -1,8 +1,7 @@
 package com.monoscode.hortahub.controllers;
 
-import com.monoscode.hortahub.entidades.Produto;
-import com.monoscode.hortahub.enums.CategoriaProduto;
-import com.monoscode.hortahub.services.ProdutoService;
+import com.monoscode.hortahub.entidades.Endereco;
+import com.monoscode.hortahub.services.EnderecoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,39 +10,39 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/produtos")
-public class ProdutoController {
+@RequestMapping("/enderecos")
+public class EnderecoController {
 
     @Autowired
-    private ProdutoService servico;
+    private EnderecoService servico;
 
     @GetMapping
-    public List<Produto> listar() {
+    public List<Endereco> listar() {
         return servico.listarTodos();
     }
 
-    @GetMapping("/categoria/{categoria}")
-    public List<Produto> listarPorCategoria(@PathVariable CategoriaProduto categoria) {
-        return servico.listarPorCategoria(categoria);
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscar(@PathVariable Long id) {
+    public ResponseEntity<Endereco> buscar(@PathVariable Long id) {
         return servico.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/assinante/{assinanteId}")
+    public List<Endereco> listarPorAssinante(@PathVariable Long assinanteId) {
+        return servico.buscarPorAssinante(assinanteId);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Produto adicionar(@RequestBody Produto produto) {
-        return servico.salvar(produto);
+    public Endereco adicionar(@RequestBody Endereco endereco) {
+        return servico.salvar(endereco);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @RequestBody Produto produto) {
+    public ResponseEntity<Endereco> atualizar(@PathVariable Long id, @RequestBody Endereco endereco) {
         try {
-            return ResponseEntity.ok(servico.atualizar(id, produto));
+            return ResponseEntity.ok(servico.atualizar(id, endereco));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
