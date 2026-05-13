@@ -1,47 +1,122 @@
 package com.monoscode.hortahub.entidades;
 
-import com.monoscode.hortahub.enums.Plano;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-/*
-TODO: Tô achando essa implementação meio ambígua
-Acredito que o correto seria remover a enum Plano e transformá-la apenas em um atributo "nomePlano"
-Outra alternativa é transformar em um enum com atributos mantendo os atributos dessa classe, mas
-todos os plano ficariam hardcodados
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-Dessa forma, Assinante teria uma associação com PlanoAssinatura (essa classe) e planoSelecionado seria desnecessário
-*/
-
-@Entity(name = "tbl_plano_assinatura")
+@Entity
+@Table(name = "tbl_plano_assinatura")
 public class PlanoAssinatura {
 
     @Id
-    private int codigoPlano;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private double precoSemanal;
+    @Column(nullable = false)
     private String nome;
-    private List<LimiteCategoria> limitesPorCategoria;
 
-    public PlanoAssinatura(double precoSemanal, int codigoPlano, String nome) {
-        this.precoSemanal = precoSemanal;
-        this.codigoPlano = codigoPlano;
+    @Column(length = 500)
+    private String descricao;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private Double valor;
+
+    @Column(nullable = false)
+    private Integer quantidadeFrutas;
+
+    @Column(nullable = false)
+    private Integer quantidadeLegumes;
+
+    @Column(nullable = false)
+    private Integer quantidadeVerduras;
+
+    @OneToMany(mappedBy = "planoAssinatura")
+    private List<Pedido> pedidos = new ArrayList<>();
+
+    public PlanoAssinatura() {
+    }
+
+    public PlanoAssinatura(String nome,
+                           String descricao,
+                           Double valor,
+                           Integer quantidadeFrutas,
+                           Integer quantidadeLegumes,
+                           Integer quantidadeVerduras) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.valor = valor;
+        this.quantidadeFrutas = quantidadeFrutas;
+        this.quantidadeLegumes = quantidadeLegumes;
+        this.quantidadeVerduras = quantidadeVerduras;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public PlanoAssinatura() {
-
+    public String getDescricao() {
+        return descricao;
     }
 
-    public int getCodigoPlano() {
-        return codigoPlano;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
-    public double getPrecoSemanal() {
-        return precoSemanal;
+    public Double getValor() {
+        return valor;
     }
 
-    public void setPrecoSemanal(double precoSemanal) {
-        this.precoSemanal = precoSemanal;
+    public void setValor(Double valor) {
+        this.valor = valor;
+    }
+
+    public Integer getQuantidadeFrutas() {
+        return quantidadeFrutas;
+    }
+
+    public void setQuantidadeFrutas(Integer quantidadeFrutas) {
+        this.quantidadeFrutas = quantidadeFrutas;
+    }
+
+    public Integer getQuantidadeLegumes() {
+        return quantidadeLegumes;
+    }
+
+    public void setQuantidadeLegumes(Integer quantidadeLegumes) {
+        this.quantidadeLegumes = quantidadeLegumes;
+    }
+
+    public Integer getQuantidadeVerduras() {
+        return quantidadeVerduras;
+    }
+
+    public void setQuantidadeVerduras(Integer quantidadeVerduras) {
+        this.quantidadeVerduras = quantidadeVerduras;
+    }
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PlanoAssinatura that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

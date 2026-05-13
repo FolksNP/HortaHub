@@ -1,8 +1,9 @@
 package com.monoscode.hortahub.entidades;
 
-import com.monoscode.hortahub.repositories.PlanoAssinaturaRepository;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "tbl_assinante")
@@ -10,11 +11,18 @@ public class Assinante {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false)
     private String sobrenome;
+
+    @Column(nullable = false, unique = true, length = 11)
     private String cpf;
+
+    @Column(nullable = false)
     private String telefone;
     private Endereco endereco;
 //    private Cesta cestaSemanal; Esse registro deve ser mantido nessa entidade?
@@ -23,16 +31,48 @@ public class Assinante {
     @JoinColumn(name = "plano_assinatura_id")
     private PlanoAssinatura planoAssinatura; // Onde entra a classe associativa "Contrato" aqui?
 
-    public Assinante(/*long id, */ String nome, String sobrenome, String cpf, String telefone) {
-        //this.id = id;
+    @OneToMany(mappedBy = "assinante", cascade = CascadeType.ALL)
+    private List<Pedido> pedidos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "assinante", cascade = CascadeType.ALL)
+    private List<Endereco> enderecos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "assinante", cascade = CascadeType.ALL)
+    private List<Pagamento> pagamentos = new ArrayList<>();
+
+
+    public Assinante() {
+    }
+
+    public Assinante(String nome, String sobrenome, String cpf, String telefone) {
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.cpf = cpf;
         this.telefone = telefone;
     }
 
-    public Assinante() {
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
 
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
+    public List<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
+    }
+
+    public List<Pagamento> getPagamentos() {
+        return pagamentos;
+    }
+
+    public void setPagamentos(List<Pagamento> pagamentos) {
+        this.pagamentos = pagamentos;
     }
 
     public void selecionarPlanoAssinatura(PlanoAssinatura plano) {
