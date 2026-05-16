@@ -24,6 +24,9 @@ public class Assinante {
 
     @Column(nullable = false)
     private String telefone;
+
+    @ManyToOne
+    @JoinColumn(name = "endereco_id")
     private Endereco endereco;
 //    private Cesta cestaSemanal; Esse registro deve ser mantido nessa entidade?
 

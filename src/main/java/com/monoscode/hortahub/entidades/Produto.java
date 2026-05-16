@@ -15,10 +15,6 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
     private String nome;
     private String unidadeMedida;
     private Double preco;
@@ -37,7 +33,7 @@ public class Produto {
 
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
