@@ -6,7 +6,7 @@ class AppRouter: ObservableObject {
     @Published var currentScreen: Screen = .landing
 
     enum Screen {
-        case landing, phoneInput, verification, plans
+        case landing, phoneInput, verification, plans, adhesion, cadastro, pagamento, finalizacao
     }
 
     var phoneNumber: String = ""
@@ -30,6 +30,19 @@ struct ContentView: View {
         case .plans:
             PlansView()
                 .environmentObject(router)
+        case .adhesion:
+            AdhesionJourney()
+                .environmentObject(router)
+        case .cadastro:
+            CadastroEnderecoView()
+                .environmentObject(router)
+        case .pagamento:
+            SecaoPagamentoView()
+                .environmentObject(router)
+        case .finalizacao:
+            FinalizacaoView()
+                .environmentObject(router)
+            
         }
     }
 }
@@ -89,17 +102,17 @@ struct LandingView: View {
 
                 Spacer()
 
-                // Placeholder image box
-                RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder(Color.white.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [8]))
-                    .frame(width: 160, height: 160)
-                    .overlay(
-                        Image(systemName: "photo")
-                            .font(.system(size: 36))
-                            .foregroundColor(.white.opacity(0.3))
-                    )
+//                // Placeholder image box
+//                RoundedRectangle(cornerRadius: 12)
+//                    .strokeBorder(Color.white.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [8]))
+//                    .frame(width: 160, height: 160)
+//                    .overlay(
+//                        Image(systemName: "photo")
+//                            .font(.system(size: 36))
+//                            .foregroundColor(.white.opacity(0.3))
+//                    )
 
-                Spacer()
+                //Spacer()
 
                 // Buttons
                 VStack(spacing: 14) {
@@ -136,6 +149,9 @@ struct LandingView: View {
 
 // MARK: - 2. Phone Input
 struct PhoneInputView: View {
+    
+    
+    
     @EnvironmentObject var router: AppRouter
     @State private var phone = ""
 
@@ -162,7 +178,7 @@ struct PhoneInputView: View {
                             .font(.system(size: 15, weight: .medium))
                             .foregroundColor(.gray)
 
-                        TextField("(DDD) 90000-0000", text: $phone)
+                        TextField("DDD900000000", text: $phone)
                             .keyboardType(.phonePad)
                             .font(.system(size: 16))
                             .padding(.horizontal, 16)
@@ -177,8 +193,20 @@ struct PhoneInputView: View {
                     .padding(.horizontal, 24)
 
                     Button {
-                        router.phoneNumber = phone
+                        
+                        requireVerificationCode(numero: phone) { result in
+                            switch result {
+                            case .success(let codigo):
+                                print(codigo)
+                                router.phoneNumber = phone
+                                router.currentScreen = .verification
+                            case .failure(let error):
+                                print(error)
+                            }
+                        }
+                        
                         router.currentScreen = .verification
+
                     } label: {
                         Text("Entrar")
                             .font(.system(size: 17, weight: .semibold))
@@ -199,6 +227,7 @@ struct PhoneInputView: View {
                         .clipShape(
                             RoundedRectangle(cornerRadius: 32, style: .continuous)
                         )
+                        .ignoresSafeArea(edges: .bottom)
                 )
             }
         }
@@ -211,6 +240,7 @@ struct VerificationView: View {
     @State private var code = ""
     @State private var timeRemaining = 59
     @State private var timer: Timer? = nil
+      
 
     // Masked phone display
     var maskedPhone: String {
@@ -306,7 +336,22 @@ struct VerificationView: View {
                     Spacer().frame(height: 24)
 
                     Button {
-                        router.currentScreen = .plans
+                        
+                        verifyVerificationCode(numero: router.phoneNumber, codigo: code) { result in
+                            switch result {
+                            case .success(let isValid):
+
+                                if isValid {
+                                    router.currentScreen = .plans
+                                } else {
+                                    // TODO: caminho triste
+                                }
+                            case .failure(let error):
+                                print("Erro ao verificar código: \(error)")
+                            }
+                        }
+
+                        
                     } label: {
                         Text("Verificar")
                             .font(.system(size: 17, weight: .semibold))
@@ -339,6 +384,7 @@ struct VerificationView: View {
                 .background(
                     Color.hortaSheet
                         .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                        .ignoresSafeArea(edges: .bottom)
                 )
             }
         }
@@ -359,16 +405,16 @@ struct VerificationView: View {
 struct Plan: Identifiable {
     let id = UUID()
     let name: String
-    let price: Int
+    let price: String
     let items: [String]
     let buttonLabel: String
 }
 
 let hortaPlans: [Plan] = [
-    Plan(name: "Horti One",  price: 139, items: ["4 Frutas", "3 Legumes", "2 Verduras", "1Kg de Grãos"], buttonLabel: "Selecionar"),
-    Plan(name: "Essencial",  price: 219, items: ["6 Frutas", "5 Legumes", "3 Verduras", "1Kg Grãos", "1 Especiaria"], buttonLabel: "Selecionar"),
-    Plan(name: "Horti Life", price: 319, items: ["8 Frutas", "6 Legumes", "4 Verduras", "1.5KG Grãos", "2 Especiarias"], buttonLabel: "Selecionar"),
-    Plan(name: "Horti Pro+", price: 439, items: ["10 Frutas", "8 Legumes", "5 Verduras", "2KG Grãos", "4 Especiarias"], buttonLabel: "Assinar condição exclusiva"),
+    Plan(name: "Horti One",  price: "39,99", items: ["4 Frutas", "3 Legumes", "2 Verduras", "1Kg de Grãos"], buttonLabel: "Selecionar"),
+    Plan(name: "Essencial",  price: "54,99", items: ["6 Frutas", "5 Legumes", "3 Verduras", "1Kg Grãos", "1 Especiaria"], buttonLabel: "Selecionar"),
+    Plan(name: "Horti Life", price: "79,99", items: ["8 Frutas", "6 Legumes", "4 Verduras", "1.5KG Grãos", "2 Especiarias"], buttonLabel: "Selecionar"),
+    Plan(name: "Horti Pro+", price: "109,99", items: ["10 Frutas", "8 Legumes", "5 Verduras", "2KG Grãos", "4 Especiarias"], buttonLabel: "Assinar condição exclusiva"),
 ]
 
 // MARK: - 4. Plans (Carousel)
@@ -460,6 +506,7 @@ struct PlansView: View {
                 .background(
                     Color.hortaSheet
                         .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                        .ignoresSafeArea(edges: .bottom)
                 )
             }
         }
@@ -468,6 +515,9 @@ struct PlansView: View {
 
 // MARK: - Plan Card
 struct PlanCardView: View {
+    
+    @EnvironmentObject var router: AppRouter
+    
     let plan: Plan
 
     var body: some View {
@@ -489,7 +539,7 @@ struct PlanCardView: View {
                     Text("\(plan.price)")
                         .font(.system(size: 42, weight: .bold))
                         .foregroundColor(.hortaDarkGreen)
-                    Text("/ mês")
+                    Text("/ semana")
                         .font(.system(size: 13))
                         .foregroundColor(.gray)
                         .padding(.leading, 2)
@@ -518,7 +568,7 @@ struct PlanCardView: View {
 
                 // CTA button
                 Button {
-                    // select plan
+                    router.currentScreen = .adhesion
                 } label: {
                     Text(plan.buttonLabel)
                         .font(.system(size: 15, weight: .semibold))
@@ -543,6 +593,508 @@ struct PlanCardView: View {
     }
 }
 
+// MARK: - Jornada de Adesão
+struct AdhesionJourney: View {
+    @EnvironmentObject var router: AppRouter
+
+    
+    @State private var nome: String = ""
+    @State private var email: String = ""
+    @State private var cpf: String = ""
+    
+    var body: some View {
+        ZStack(alignment: .top) {
+            LinearGradient(
+                colors: [.hortaDarkGreen, .hortaMidGreen],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            
+            VStack{
+                HStack(alignment: .center) {
+                    Image(systemName: "leaf.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(.green)
+                        .rotationEffect(.degrees(-20))
+                    Text("HortaHub")
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+                
+                .padding(.horizontal, 28)
+                .padding(.top, 60)
+                .padding(.bottom, 28)
+                
+                VStack{
+                    
+                    Text("É um prazer tê-lo conosco!")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(Font.system(size: 20, weight: .semibold))
+                        .padding(.top, 64)
+                        .padding(.leading, 24)
+                    
+                    Text("Cadastre as suas informacoes abaixo:")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(Font.system(size: 20, weight: .regular))
+                        .padding(.top, 1)
+                        .padding(.leading, 24)
+                    
+
+
+                    VStack{
+                        Text("Nome completo:")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(Font.system(size: 16, weight: .regular))
+                        
+                        
+                        TextField("Ana Claudia ", text: $nome)
+                            .padding(16)
+                            .background()
+                            .border(Color.hortaSheet.opacity(0.3), width: 1)
+                            .cornerRadius(16)
+                            .padding(.bottom, 16)
+                        
+                        Text("Email:")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(Font.system(size: 16, weight: .regular))
+                        
+                        
+                        TextField("user@mail.com ", text: $email)
+                            .padding(16)
+                            .background()
+                            .border(Color.hortaSheet.opacity(0.3), width: 1)
+                            .cornerRadius(16)
+                            .padding(.bottom, 16)
+                        
+                        Text("CPF:")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(Font.system(size: 16, weight: .regular))
+                        
+                        
+                        TextField("123.456.789-10", text: $cpf)
+                            .padding(16)
+                            .background()
+                            .border(Color.hortaSheet.opacity(0.3), width: 1)
+                            .cornerRadius(16)
+                            .padding(.bottom, 64)
+                        
+                        
+                        Button {
+                            router.currentScreen = .cadastro
+                        } label: {
+                            Text("Próxima etapa")
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity) // Faz o texto ocupar a largura toda
+                                .padding() // Dá altura ao botão
+                                .background(Color.hortaDarkGreen) // Sua cor customizada
+                                .foregroundColor(.white) // Cor do texto
+                                .cornerRadius(12) // Arredondamento
+
+                        }
+                        
+                        
+                    }
+                    .padding(24)
+                    
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(
+                    Color.hortaSheet
+                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                        .ignoresSafeArea(edges: .bottom)
+                )
+
+            }
+            
+        }
+    }
+        
+}
+
+// MARK: - Cadastro do Endereco
+struct CadastroEnderecoView: View {
+    
+    @EnvironmentObject var router: AppRouter
+    
+    @State private var cep: String = ""
+    @State private var endereco: String = ""
+    @State private var numero: String = ""
+    @State private var referencia: String = ""
+    
+    var body: some View {
+        ZStack(alignment: .top) {
+            LinearGradient(
+                colors: [.hortaDarkGreen, .hortaMidGreen],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            
+            VStack{
+                HStack(alignment: .center) {
+                    Image(systemName: "leaf.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(.green)
+                        .rotationEffect(.degrees(-20))
+                    Text("HortaHub")
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+                
+                .padding(.horizontal, 28)
+                .padding(.top, 60)
+                .padding(.bottom, 28)
+                
+                VStack{
+                    
+                    Text("É um prazer tê-lo conosco!")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(Font.system(size: 20, weight: .semibold))
+                        .padding(.top, 64)
+                        .padding(.leading, 24)
+                    
+                    Text("Cadastre as suas informacoes abaixo:")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(Font.system(size: 20, weight: .regular))
+                        .padding(.top, 1)
+                        .padding(.leading, 24)
+                    
+
+
+                    VStack{
+                        Text("CEP:")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(Font.system(size: 16, weight: .regular))
+                        
+                        
+                        TextField("00000-000 ", text: $cep)
+                            .padding(16)
+                            .background()
+                            .border(Color.hortaSheet.opacity(0.3), width: 1)
+                            .cornerRadius(16)
+                            .padding(.bottom, 16)
+                        
+                        Text("Endereco:")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(Font.system(size: 16, weight: .regular))
+                        
+                        
+                        TextField("Rua da Consolação", text: $endereco)
+                            .padding(16)
+                            .background()
+                            .border(Color.hortaSheet.opacity(0.3), width: 1)
+                            .cornerRadius(16)
+                            .padding(.bottom, 16)
+                        
+                        Text("Numero:")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(Font.system(size: 16, weight: .regular))
+                        
+                        
+                        TextField("930", text: $numero)
+                            .padding(16)
+                            .background()
+                            .border(Color.hortaSheet.opacity(0.3), width: 1)
+                            .cornerRadius(16)
+                            .padding(.bottom, 16)
+                        
+                        Text("Referência: ")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(Font.system(size: 16, weight: .regular))
+                        
+                        
+                        TextField("Universidade Presbiteriana Mackenzie", text: $referencia)
+                            .padding(16)
+                            .background()
+                            .border(Color.hortaSheet.opacity(0.3), width: 1)
+                            .cornerRadius(16)
+                            .padding(.bottom, 16)
+                        
+                        
+                        Button {
+                            router.currentScreen = .pagamento
+                        } label: {
+                            Text("Próxima etapa")
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity) // Faz o texto ocupar a largura toda
+                                .padding() // Dá altura ao botão
+                                .background(Color.hortaDarkGreen) // Sua cor customizada
+                                .foregroundColor(.white) // Cor do texto
+                                .cornerRadius(12) // Arredondamento
+                        }
+                        
+                        
+                    }
+                    .padding(24)
+                    
+                    
+                    
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(
+                    Color.hortaSheet
+                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                        .ignoresSafeArea(edges: .bottom)
+                )
+
+            }
+            
+        }
+        
+    }
+    
+}
+
+// MARK: - Tela de pagamento
+struct SecaoPagamentoView: View {
+    
+    @EnvironmentObject var router: AppRouter
+    
+    @State private var numeroDoCartao: String = ""
+    @State private var nomeImpresso: String = ""
+    @State private var validade: String = ""
+    @State private var cvv: String = ""
+    
+    var body: some View {
+        ZStack(alignment: .top) {
+            LinearGradient(
+                colors: [.hortaDarkGreen, .hortaMidGreen],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            
+            VStack{
+                HStack(alignment: .center) {
+                    Image(systemName: "leaf.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(.green)
+                        .rotationEffect(.degrees(-20))
+                    Text("HortaHub")
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+                
+                .padding(.horizontal, 28)
+                .padding(.top, 60)
+                .padding(.bottom, 28)
+                
+                VStack{
+                
+                    
+                    Text("Cadastre uma forma de pagamento:")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(Font.system(size: 16, weight: .regular))
+                        .padding(.top, 1)
+                        .padding(.leading, 24)
+                    
+
+
+                    VStack{
+                        Text("Numero do cartao:")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(Font.system(size: 16, weight: .regular))
+                        
+                        
+                        TextField("1234 5678 9876 5432", text: $numeroDoCartao)
+                            .padding(16)
+                            .background()
+                            .border(Color.hortaSheet.opacity(0.3), width: 1)
+                            .cornerRadius(16)
+                            .padding(.bottom, 16)
+                        
+                        Text("Nome impresso:")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(Font.system(size: 16, weight: .regular))
+                        
+                        
+                        TextField("Theo R Esposito", text: $nomeImpresso)
+                            .padding(16)
+                            .background()
+                            .border(Color.hortaSheet.opacity(0.3), width: 1)
+                            .cornerRadius(16)
+                            .padding(.bottom, 16)
+                        
+                        HStack{
+                            VStack{
+                                Text("Validade:")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .font(Font.system(size: 16, weight: .regular))
+                                
+                                
+                                TextField("MM/AA", text: $validade)
+                                    .padding(16)
+                                    .background()
+                                    .border(Color.hortaSheet.opacity(0.3), width: 1)
+                                    .cornerRadius(16)
+                                    .padding(.bottom, 16)
+                            }
+                            
+                            VStack{
+                                Text("CVV: ")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .font(Font.system(size: 16, weight: .regular))
+                                
+                                
+                                TextField("000", text: $cvv)
+                                    .padding(16)
+                                    .background()
+                                    .border(Color.hortaSheet.opacity(0.3), width: 1)
+                                    .cornerRadius(16)
+                                    .padding(.bottom, 16)
+                            }
+                            
+                        }
+                            
+                        Button {
+                            router.currentScreen = .finalizacao
+                        } label: {
+                            Text("Finalizar")
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity) // Faz o texto ocupar a largura toda
+                                .padding() // Dá altura ao botão
+                                .background(Color.hortaDarkGreen) // Sua cor customizada
+                                .foregroundColor(.white) // Cor do texto
+                                .cornerRadius(12) // Arredondamento
+                        }
+                        
+                        
+                        VStack{
+                            HStack{
+                                Image("visa")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .background(Color.white)
+                                    .cornerRadius(8)
+                                    .frame(width: 50, height: 50)
+                                
+                                Image("mastercard")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .background(Color.white)
+                                    .cornerRadius(8)
+                                    .frame(width: 50, height: 50)
+                                
+                                Image("elo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .background(Color.white)
+                                    .cornerRadius(8)
+                                    .frame(width: 50, height: 50)
+                                
+                                Image("diner")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .background(Color.white)
+                                    .cornerRadius(8)
+                                    .frame(width: 50, height: 50)
+                                
+                                Image("amex")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .background(Color.white)
+                                    .cornerRadius(8)
+                                    .frame(width: 50, height: 50)
+                            }
+                            .padding(.top, 40)
+                            Text("bandeiras aceitas")
+                                .font(Font.custom("Poppins-Regular", size: 14))
+                                .padding(.top, 4)
+                                .foregroundStyle(Color.gray.opacity(1))
+                        }
+                        
+                    }
+                    .padding(24)
+                    
+                    
+                    
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(
+                    Color.hortaSheet
+                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                        .ignoresSafeArea(edges: .bottom)
+                )
+
+            }
+            
+        }
+        
+    }
+
+}
+
+// MARK: - Final
+struct FinalizacaoView: View {
+    
+    @EnvironmentObject var router: AppRouter
+    
+    @State var planoSelecionado: String = "Essencial"
+    @State var registro: String = "#RSF1D4PUZ3"
+    @State var entrega: String = "Rua da Consolação, 930"
+    
+    var body: some View {
+        ZStack(alignment: .top) {
+            LinearGradient(
+                colors: [.hortaDarkGreen, .hortaMidGreen],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            
+            VStack{
+                HortaHeader()
+                
+                Text("Pedido realizado com sucesso!")
+                    .padding(.top, 15)
+                    .foregroundStyle(Color(.white).opacity(1))
+                    .font(Font.title.bold())
+                
+                VStack{
+                    Text("Plano: \(planoSelecionado)")
+                        .padding(.top, 10)
+                        .padding(.leading, 15)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text("Registro: \(registro)")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 15)
+                    Text("Entrega: \(entrega)")
+                        .padding(.bottom, 10)
+                        .padding(.leading, 15)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.white.opacity(1))
+                .cornerRadius(10)
+                .padding(20)
+                
+                Spacer()
+                
+                Button {
+                    router.currentScreen = .landing
+                } label: {
+                    Text("Continuar")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: 330) // Faz o texto ocupar a largura toda
+                        .padding() // Dá altura ao botão
+                        .background(Color.white) // Sua cor customizada
+                        .foregroundColor(.hortaDarkGreen) // Cor do texto
+                        .cornerRadius(50) // Arredondamento
+                }
+                .padding(.bottom, 50)
+               
+                
+            }
+        }
+    }
+
+}
+
+
 // MARK: - Previews
 
 #Preview("Landing") {
@@ -559,6 +1111,22 @@ struct PlanCardView: View {
 
 #Preview("Plans") {
     PlansView().environmentObject(AppRouter())
+}
+
+#Preview("Adhesion Journey"){
+    AdhesionJourney().environmentObject(AppRouter())
+}
+
+#Preview("Cadastro"){
+    CadastroEnderecoView().environmentObject(AppRouter())
+}
+
+#Preview("Pagamento"){
+    SecaoPagamentoView().environmentObject(AppRouter())
+}
+
+#Preview("Finalizacao"){
+    FinalizacaoView().environmentObject(AppRouter())
 }
 
 #Preview("Full Flow") {
