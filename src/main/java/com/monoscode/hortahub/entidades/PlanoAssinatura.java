@@ -20,7 +20,7 @@ public class PlanoAssinatura {
     @Column(length = 500)
     private String descricao;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false)
     private Double valor;
 
     @Column(nullable = false)

@@ -14,7 +14,7 @@ public class Pagamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, precision = 3, scale = 2)
+    @Column(nullable = false)
     private Double valor;
 
     @Column(nullable = false)

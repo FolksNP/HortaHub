@@ -9,6 +9,8 @@ import java.util.Random;
 @Entity(name = "tbl_sandbox_codigos_verificacao")
 public class CodigoVerificacao {
 
+
+
     private int gerarNumero(){
         Random rd = new Random();
         return rd.nextInt(111111, 999999);
