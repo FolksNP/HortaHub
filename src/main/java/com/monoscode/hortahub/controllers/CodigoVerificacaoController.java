@@ -50,8 +50,9 @@ public class CodigoVerificacaoController {
     }
 
     @GetMapping("/verificar/{code}")
-    public Boolean verificarCodigo(@PathVariable String codigo_cliente){
-        return verificadorTelefone.getCodigo().equals(codigo_cliente);
+    public ResponseEntity<Boolean> verificarCodigo(@PathVariable String codigo_cliente){
+        Boolean codigoCorreto = verificadorTelefone.getCodigo().equals(codigo_cliente);
+        return ResponseEntity.ok(codigoCorreto);
     }
 
 }
