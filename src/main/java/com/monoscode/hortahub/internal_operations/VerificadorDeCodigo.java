@@ -4,18 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.springframework.web.client.RestClient;
+
 import java.util.Random;
 
 @Entity(name = "tbl_sandbox_codigos_verificacao")
-public class CodigoVerificacao {
-
-
-
-    private int gerarNumero(){
-        Random rd = new Random();
-        return rd.nextInt(111111, 999999);
-    }
-
+public class VerificadorDeCodigo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -23,12 +17,25 @@ public class CodigoVerificacao {
     private int codigo;
     private String numeroDeTelefoneAssociado;
 
-    public CodigoVerificacao(String numeroDeTelefoneAssociado){
+    public VerificadorDeCodigo(String numeroDeTelefoneAssociado){
         this.numeroDeTelefoneAssociado = numeroDeTelefoneAssociado;
-        this.codigo = gerarNumero();
+        this.codigo = gerarCodigoVerificacao();
     }
 
-    public CodigoVerificacao(){
+    private int gerarCodigoVerificacao(){
+        Random rd = new Random();
+        return rd.nextInt(111111, 999999);
+    }
+
+    public void enviarCodigo() {
+        RestClient restClient = RestClient.create();
+        restClient.get()
+                .uri("https://api.callmebot.com/whatsapp.php?phone=" + this.numeroDeTelefoneAssociado +"&text=" + codigo + "&apikey=4892334")
+                .retrieve()
+                .body(String.class);
+    }
+
+    public VerificadorDeCodigo(){
 
     }
 
