@@ -1,4 +1,4 @@
-package com.monoscode.hortahub.controllers;
+package com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.controllers;
 
 import com.monoscode.hortahub.internal_operations.VerificadorDeCodigoService;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class CodigoVerificacaoController {
     @GetMapping("/enviar/{numero}")
     public ResponseEntity<String> enviarMensagem(@PathVariable String numero) {
         verificadorTelefoneService.enviarCodigo(numero);
-        return ResponseEntity.ok("\"ok\"");
+        return ResponseEntity.ok("ok");
     }
 
     @GetMapping("/verificar/{numero}/{codigo_cliente}")
