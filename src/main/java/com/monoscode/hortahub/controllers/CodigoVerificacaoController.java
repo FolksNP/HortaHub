@@ -49,7 +49,7 @@ public class CodigoVerificacaoController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/verificar/{code}")
+    @GetMapping("/verificar/{codigo_cliente}")
     public ResponseEntity<Boolean> verificarCodigo(@PathVariable String codigo_cliente){
         Boolean codigoCorreto = verificadorTelefone.getCodigo().equals(codigo_cliente);
         return ResponseEntity.ok(codigoCorreto);

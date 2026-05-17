@@ -30,7 +30,7 @@ public class VerificadorDeCodigo {
     public void enviarCodigo() {
         RestClient restClient = RestClient.create();
         restClient.get()
-                .uri("https://api.callmebot.com/whatsapp.php?phone=" + this.numeroDeTelefoneAssociado +"&text=" + codigo + "&apikey=4892334")
+                .uri("https://api.callmebot.com/whatsapp.php?phone=" + this.numeroDeTelefoneAssociado + "&text=" + codigo + "&apikey=4892334")
                 .retrieve()
                 .body(String.class);
     }
