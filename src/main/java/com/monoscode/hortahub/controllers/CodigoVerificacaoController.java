@@ -9,10 +9,14 @@ import org.springframework.web.bind.annotation.*;
 public class CodigoVerificacaoController {
     VerificadorDeCodigoService verificadorTelefoneService;
 
+    public CodigoVerificacaoController(VerificadorDeCodigoService verificadorDeCodigoService) {
+        this.verificadorTelefoneService = verificadorDeCodigoService;
+    }
+
     @GetMapping("/enviar/{numero}")
-    public ResponseEntity<Void> enviarMensagem(@PathVariable String numero) {
+    public ResponseEntity<String> enviarMensagem(@PathVariable String numero) {
         verificadorTelefoneService.enviarCodigo(numero);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("ok");
     }
 
     @GetMapping("/verificar/{numero}/{codigo_cliente}")
