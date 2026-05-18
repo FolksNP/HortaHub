@@ -31,8 +31,11 @@ public class PlanoAssinatura {
     @Column(nullable = false)
     private Integer quantidadeVerduras;
 
-    @OneToMany(mappedBy = "planoAssinatura")
-    private List<Pedido> pedidos = new ArrayList<>();
+//    @Column(nullable = false)
+//    private Integer quantidadeGraos;
+//
+//    @Column(nullable = false)
+//    private Integer quantidadeEspeciarias;
 
     public PlanoAssinatura() {
     }
@@ -103,9 +106,9 @@ public class PlanoAssinatura {
         this.quantidadeVerduras = quantidadeVerduras;
     }
 
-    public List<Pedido> getPedidos() {
-        return pedidos;
-    }
+//    public List<Pedido> getPedidos() {
+//        return pedidos;
+//    }
 
     @Override
     public boolean equals(Object o) {

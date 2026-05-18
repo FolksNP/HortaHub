@@ -28,7 +28,7 @@ public class VerificadorDeCodigoService {
 
         RestClient restClient = RestClient.create();
         restClient.get()
-                .uri("https://api.callmebot.com/whatsapp.php?phone=" + numeroDeTelefone + "&text=" + codigoGerado + "&apikey=4892334")
+                .uri("https://api.callmebot.com/whatsapp.php?phone=" + numeroDeTelefone + "&text=" + codigoGerado + "&apikey=5122341")
                 .retrieve()
                 .body(String.class);
     }

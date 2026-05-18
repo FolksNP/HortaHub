@@ -10,15 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("planos")
+@RequestMapping("/planos")
 public class PlanoAssinaturaController {
     PlanoAssinaturaService planoService;
+
+//    public PlanoAssinaturaController() {}
 
     public PlanoAssinaturaController(PlanoAssinaturaService planoService) {
         this.planoService = planoService;
     }
 
-    public PlanoAssinaturaController() {}
 
     @GetMapping // Ou mapear para /planos/all
     public ResponseEntity<List<PlanoAssinatura>> listarTodos() {

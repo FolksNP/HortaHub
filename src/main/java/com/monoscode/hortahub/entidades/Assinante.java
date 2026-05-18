@@ -78,7 +78,7 @@ public class Assinante {
         this.pagamentos = pagamentos;
     }
 
-    public void selecionarPlanoAssinatura(com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.entidades.PlanoAssinatura plano) {
+    public void selecionarPlanoAssinatura(PlanoAssinatura plano) {
         this.planoAssinatura = plano;
     }
 
