@@ -1,4 +1,4 @@
-package com.monoscode.hortahub.repositories;
+package com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.repositories;
 
 import com.monoscode.hortahub.entidades.Endereco;
 import org.springframework.data.jpa.repository.JpaRepository;

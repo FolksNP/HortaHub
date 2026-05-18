@@ -1,4 +1,4 @@
-package com.monoscode.hortahub;
+package com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

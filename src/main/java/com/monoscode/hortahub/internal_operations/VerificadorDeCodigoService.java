@@ -1,4 +1,4 @@
-package com.monoscode.hortahub.internal_operations;
+package com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.internal_operations;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -28,7 +28,7 @@ public class VerificadorDeCodigoService {
 
         RestClient restClient = RestClient.create();
         restClient.get()
-                .uri("https://api.callmebot.com/whatsapp.php?phone=" + numeroDeTelefone + "&text=" + codigoGerado + "&apikey=5122341")
+                .uri("https://api.callmebot.com/whatsapp.php?phone=" + numeroDeTelefone + "&text=" + codigoGerado + "&apikey=4892334")
                 .retrieve()
                 .body(String.class);
     }
@@ -48,5 +48,10 @@ public class VerificadorDeCodigoService {
 
     public VerificadorDeCodigoService(){
 
+    }
+
+    // Apenas para uso em testes — permite injetar um código sem chamar a API externa
+    public void adicionarCodigoParaTeste(String numeroDeTelefone, String codigo) {
+        codigosEmMemoria.put(numeroDeTelefone, codigo);
     }
 }

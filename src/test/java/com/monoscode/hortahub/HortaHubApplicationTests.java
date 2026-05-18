@@ -1,4 +1,4 @@
-package com.monoscode.hortahub;
+package com.monoscode.hortahub.testador.src.test.java.com.monoscode.hortahub;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
