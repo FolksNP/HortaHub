@@ -1,4 +1,4 @@
-package com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.entidades;
+package com.monoscode.hortahub.entidades;
 
 import jakarta.persistence.*;
 

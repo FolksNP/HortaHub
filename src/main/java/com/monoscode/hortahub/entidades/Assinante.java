@@ -1,4 +1,4 @@
-package com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.entidades;
+package com.monoscode.hortahub.entidades;
 
 import jakarta.persistence.*;
 
@@ -78,7 +78,7 @@ public class Assinante {
         this.pagamentos = pagamentos;
     }
 
-    public void selecionarPlanoAssinatura(PlanoAssinatura plano) {
+    public void selecionarPlanoAssinatura(com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.entidades.PlanoAssinatura plano) {
         this.planoAssinatura = plano;
     }
 

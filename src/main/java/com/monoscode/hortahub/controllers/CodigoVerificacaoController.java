@@ -1,4 +1,4 @@
-package com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.controllers;
+package com.monoscode.hortahub.controllers;
 
 import com.monoscode.hortahub.internal_operations.VerificadorDeCodigoService;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.services;
+package com.monoscode.hortahub.services;
 
 import com.monoscode.hortahub.entidades.Produto;
 import com.monoscode.hortahub.enums.CategoriaProduto;

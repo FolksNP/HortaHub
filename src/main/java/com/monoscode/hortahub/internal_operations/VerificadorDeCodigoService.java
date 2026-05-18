@@ -1,4 +1,4 @@
-package com.monoscode.hortahub.testador.src.main.java.com.monoscode.hortahub.internal_operations;
+package com.monoscode.hortahub.internal_operations;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
